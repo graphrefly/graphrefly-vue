@@ -7,7 +7,7 @@
 # requires a package to exist before a trusted publisher can be configured.
 # For that first release only, add a short-lived repository NPM_TOKEN secret.
 # Remove it after publication and configure each package's trusted publisher as:
-#   org=graphrefly, repo=graphrefly-react, workflow=release.yml
+#   org=graphrefly, repo=graphrefly-vue, workflow=release.yml
 
 name: Release
 

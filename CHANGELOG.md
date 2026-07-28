@@ -1,4 +1,4 @@
-# @graphrefly/react
+# @graphrefly/vue
 
 ## 0.1.0
 

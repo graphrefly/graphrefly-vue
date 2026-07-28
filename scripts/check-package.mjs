@@ -1,9 +1,9 @@
 import { execFileSync } from "node:child_process";
 import {
-	cpSync,
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
+	readdirSync,
 	readFileSync,
 	rmSync,
 	symlinkSync,
@@ -90,10 +90,36 @@ for (const [subpath, expectedExports] of Object.entries(expectedEntries)) {
 const tmp = mkdtempSync(join(tmpdir(), "graphrefly-ecosystem-package-"));
 const externalCwd = mkdtempSync(join(tmpdir(), "graphrefly-ecosystem-external-cwd-"));
 try {
+	const packDir = join(tmp, "pack");
+	mkdirSync(packDir);
+	execFileSync("npm", ["pack", "--pack-destination", packDir], {
+		cwd: packageRoot,
+		stdio: "pipe",
+	});
+	const tarballs = readdirSync(packDir).filter((entry) => entry.endsWith(".tgz"));
+	assert(tarballs.length === 1, "npm pack must produce exactly one tarball");
+	writeFileSync(join(tmp, "package.json"), JSON.stringify({ private: true, type: "module" }));
+	execFileSync(
+		"npm",
+		[
+			"install",
+			"--ignore-scripts",
+			"--legacy-peer-deps",
+			"--package-lock=false",
+			"--no-audit",
+			"--no-fund",
+			join(packDir, tarballs[0]),
+		],
+		{ cwd: tmp, stdio: "pipe" },
+	);
 	const packageInstall = join(tmp, "node_modules", ...packageJson.name.split("/"));
-	mkdirSync(packageInstall, { recursive: true });
-	cpSync(join(packageRoot, "package.json"), join(packageInstall, "package.json"));
-	cpSync(join(packageRoot, "dist"), join(packageInstall, "dist"), { recursive: true });
+	const packedManifest = JSON.parse(readFileSync(join(packageInstall, "package.json"), "utf8"));
+	assert(packedManifest.name === packageJson.name, "packed package name changed");
+	assert(packedManifest.version === packageJson.version, "packed package version changed");
+	assert(
+		packedManifest.repository?.url === packageJson.repository?.url,
+		"packed repository authority changed",
+	);
 
 	for (const peerName of Object.keys(packageJson.peerDependencies ?? {})) {
 		const target = resolveInstalledPackage(peerName);
@@ -132,7 +158,6 @@ try {
 		);
 	}
 
-	writeFileSync(join(tmp, "package.json"), JSON.stringify({ private: true, type: "module" }));
 	writeFileSync(
 		join(tmp, "esm-smoke.mjs"),
 		`import assert from "node:assert/strict";
@@ -223,4 +248,4 @@ unsubscribe();
 	rmSync(externalCwd, { recursive: true, force: true });
 }
 
-console.log(`check-ecosystem-package: ${packageJson.name} ESM/CJS/DTS smoke passed`);
+console.log(`check-package: ${packageJson.name} packed ESM/CJS/DTS smoke passed`);

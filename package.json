@@ -1,24 +1,30 @@
 {
-	"name": "@graphrefly/react",
+	"name": "@graphrefly/vue",
 	"version": "0.1.0",
-	"description": "Reactive binding + presentation layer for GraphReFly (React). Currently a binding-core spike on top of @graphrefly/ts.",
+	"description": "Vue bindings for GraphReFly.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/graphrefly/graphrefly-react.git"
+		"url": "git+https://github.com/graphrefly/graphrefly-vue.git"
 	},
 	"bugs": {
-		"url": "https://github.com/graphrefly/graphrefly-react/issues"
+		"url": "https://github.com/graphrefly/graphrefly-vue/issues"
 	},
 	"homepage": "https://graphrefly.dev",
+	"type": "module",
+	"sideEffects": false,
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"default": "./dist/index.js"
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -26,52 +32,40 @@
 		"README.md",
 		"package.json"
 	],
-	"sideEffects": false,
-	"type": "module",
-	"packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
-	"engines": {
-		"node": ">=24"
-	},
 	"scripts": {
 		"clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"format": "biome format --write .",
 		"typecheck": "tsc --noEmit",
-		"build": "pnpm run clean && tsup src/index.ts --format esm,cjs --dts --clean && node scripts/check-package-exports.mjs",
+		"build": "pnpm run clean && tsup src/index.ts --format esm,cjs --dts --clean && node scripts/check-package.mjs .",
+		"build:all": "pnpm run build",
 		"test": "vitest run",
-		"test:watch": "vitest",
-		"dashboard": "node dashboard/build.mjs",
-		"dashboard:check": "node dashboard/build.mjs --check",
-		"build:all": "pnpm run build && pnpm --filter './packages/**' --workspace-concurrency=1 run build",
-		"test:all": "pnpm run test && pnpm --filter './packages/**' --workspace-concurrency=1 run test",
+		"test:all": "pnpm run test",
 		"changeset": "changeset",
 		"version-packages": "changeset version",
-		"release": "pnpm run build:all && changeset publish"
+		"release": "pnpm run build && changeset publish"
+	},
+	"peerDependencies": {
+		"@graphrefly/ts": ">=0.6.2 <1.0.0",
+		"vue": "^3.5.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.6",
 		"@changesets/changelog-git": "^0.2.1",
 		"@changesets/cli": "^2.31.0",
 		"@graphrefly/ts": "0.6.2",
-		"@testing-library/dom": "^10.4.1",
-		"@testing-library/react": "^16.3.2",
 		"@types/node": "^25.5.0",
-		"@types/react": "^19.2.15",
-		"@types/react-dom": "^19.2.3",
-		"jsdom": "^29.1.1",
-		"react": "^19.2.6",
-		"react-dom": "^19.2.6",
 		"tsup": "^8.5.1",
 		"typescript": "^5.7.0",
-		"vitest": "^4.1.7"
-	},
-	"peerDependencies": {
-		"@graphrefly/ts": ">=0.6.2 <1.0.0",
-		"react": "^18.0.0 || ^19.0.0"
+		"vitest": "^4.1.7",
+		"vue": "^3.5.0"
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
+	"engines": {
+		"node": ">=24"
 	},
 	"license": "MIT"
 }
