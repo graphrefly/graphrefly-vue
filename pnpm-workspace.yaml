@@ -1,0 +1,10 @@
+packages:
+  - .
+  - packages/*
+  - apps/*
+allowBuilds:
+  '@biomejs/biome': true
+  canvas: false
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@graphrefly/ts@0.0.1||0.6.2'
