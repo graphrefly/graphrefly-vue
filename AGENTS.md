@@ -1,21 +1,16 @@
-# graphrefly-vue — agent context
+# @graphrefly/vue agent entrypoint
 
-This repository owns its Vue binding and package-local work. GraphReFly engine, protocol and
-cross-project authority remain in `~/src/graphrefly-ts` and `~/src/graphrefly`; do not duplicate them
-here.
+Start with [README](README.md) and the [documentation map](docs/README.md).
+This repository owns its package/binding work; protocol and shared runtime
+contracts remain [root](../graphrefly/AGENTS.md) and
+[TS-owned](../graphrefly-ts/AGENTS.md). Public exports and check commands live in
+[package metadata](package.json); the map does not introduce a local ledger.
 
-When changing authority records or resolving an execution, spend, retry, or stalled-work
-authorization boundary, load and follow the personal
-`$project-governance` skill at `~/.codex/skills/project-governance/SKILL.md`. This is a
-cross-project process floor, not package or GraphReFly product authority. Keep local IDs, records and
-gates independent unless an explicitly approved GraphReFly family contract requires a qualified link.
-
-## Shared build and human review
-
-Use the personal `~/.codex/skills/bmad-build/SKILL.md` inside the work selected by this repository's
-dispatch/Goal workflow. Use `~/.codex/skills/bmad-build/references/qa.md` for machine-review lenses,
-finding triage and repairs, together with this repository's own QA checks and completion gates.
-Use `~/.codex/skills/bmad-checkpoint-preview/SKILL.md` for the human review trail; it replaces the old
-repository-ownership-practice checks. Ordinary delivery uses build-handoff mode; explicit checkpoint
-or `--practice` requests use interactive review. The shared skills own only this personal workflow;
-project authority, semantic approvals, execution permissions and work records remain locally governed.
+Resolve authority and new scope through [root admission](../graphrefly/authority/README.md)
+and [the owner locator](../graphrefly/authority/ledgers.jsonl).
+Follow [personal governance](/Users/davidchenallio/.codex/skills/project-governance/SKILL.md)
+for records, execution/spend/retry classification and stalled-work boundaries.
+Use [bmad-build](.agents/skills/bmad-build/SKILL.md) and
+[bmad-qa](.agents/skills/bmad-qa/SKILL.md) within approved work with local gates.
+Human review uses [bmad-checkpoint-preview](.agents/skills/bmad-checkpoint-preview/SKILL.md):
+build-handoff for ordinary delivery, interactive for checkpoint/`--practice`.
